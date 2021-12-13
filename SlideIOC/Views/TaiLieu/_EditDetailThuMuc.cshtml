@@ -1,0 +1,36 @@
+﻿@model SlideIOC.Models.ThuMucModel
+
+
+<div class="box-header">
+    <button type="button" class="btn btn-sm btn-primary" onclick="return openTaiLieu(0, @Model.ThuMucID)">Tạo tài liệu</button>
+    <button type="button" class="btn btn-sm btn-warning" onclick="return openThuMuc(0, @Model.ThuMucID)">Tạo thư mục con</button>
+    <button type="button" class="btn btn-sm btn-danger" onclick="return deleteThuMuc(@Model.ThuMucID)">Xóa thư mục</button>
+</div>
+<div class="box-body">
+
+    @using (Ajax.BeginForm("EditDetailThuMuc", "TaiLieu", FormMethod.Post,
+                    new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", OnSuccess = "GetResult" }, new { @id = "frmThuMuc" }))
+    {
+        @Html.ValidationSummary()
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label>Tên thư mục<span class="red-color">(*)</span></label>
+                    @Html.TextBoxFor(model => model.TenThuMuc, new { @class = "form-control", @id = "txtName" })
+                    @Html.HiddenFor(model => model.ThuMucID, new { @id = "txtId" })
+                </div>
+                <div class="form-group">
+                    <label>Số thứ tự</label>
+                    @Html.TextBoxFor(model => model.STT, new { @class = "form-control", @id = "txtStaffName" })
+                </div>
+                <div class="form-group">
+                    <label>Thư mục cha</label>
+                    @Html.DropDownListFor(model => model.ThuMucChaID, (IEnumerable<SelectListItem>)ViewData["CmbListThuMuc"], new { @class = "form-control" })
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-floppy-disk"></span> Lưu lại</button>
+            </div>
+
+        </div>
+    }
+</div>

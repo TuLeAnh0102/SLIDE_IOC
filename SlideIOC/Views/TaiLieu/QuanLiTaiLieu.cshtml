@@ -1,0 +1,309 @@
+﻿@model IEnumerable<SlideIOC.Models.ThuMucModel>
+@{
+    ViewBag.Title = "Tài liệu VNPT Bình Phước";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SlideIOC.Models.ThuMucModel> _listThuMuc = (List<SlideIOC.Models.ThuMucModel>)ViewData["DanhSachThuMuc"];
+
+    if (TempData["AlertMessage"] != null)
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                alert("@TempData["AlertMessage"]");
+            };
+        </script>
+    }
+}
+@section Styles
+{
+    <link href="~/Content/treeJs/themes/default/style.min.css" rel="stylesheet">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="~/Content/plugins/iCheck/all.css">
+    <style>
+        #col-left {
+            background-color: #ecf0f5 !important;
+        }
+
+        #col-right {
+            background-color: #ecf0f5 !important;
+        }
+
+        .skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {
+            background-color: #ffffff !important;
+        }
+
+        .skin-blue .sidebar a {
+            color: #2a7ea5;
+        }
+    </style>
+}
+
+
+<!-- =============================================== -->
+<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar" id="col-left">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" id="txtSearch" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <div id="jstree" class="user-panel demo">
+            <ul class="sidebar-menu tree">
+                @GetTreeView(_listThuMuc, 1)
+            </ul>
+        </div>
+    </section>
+    <!-- /.sidebar -->
+</aside>
+
+<div class="content-wrapper" id="col-right">
+    <!-- Main content -->
+    <section class="content">
+            <div class="box box-primary" id="receiver-container">
+               
+            </div>
+    </section>
+</div>
+
+<div class="modal fade" id="edit-user">
+    <div id="edit-user-container"></div>
+</div>
+
+<div class="modal fade" id="deleteThuMuc">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                <h4 class="modal-title custom_align" id="Heading">Xóa</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <span class="glyphicon glyphicon-warning-sign"></span> Bạn có chắc chắc muốn xóa thư mục này?
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-success" id="btnDeleteThuMucYes">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Có
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span> Không
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="deleteTaiLieu">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                <h4 class="modal-title custom_align" id="Heading">Xóa</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <span class="glyphicon glyphicon-warning-sign"></span> Bạn có chắc chắc muốn xóa tài liệu này?
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-success" id="btnDeleteTaiLieuYes">
+                    <span class="glyphicon glyphicon-ok-sign"></span> Có
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span> Không
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@helper GetTreeView(List<SlideIOC.Models.ThuMucModel> listThuMuc, int dvID)
+{
+var iThuMuc = listThuMuc.First(a => a.ThuMucID.Equals(dvID));
+var subChild = listThuMuc.Where(a => a.ThuMucChaID.Equals(iThuMuc.ThuMucID) && !a.ThuMucChaID.Equals(a.ThuMucID)).Count();
+
+if (subChild > 0)
+{
+        <li class="jstree-open" >
+            <span>
+                <a onclick="return openThuMuc(@iThuMuc.ThuMucID, @dvID);">@iThuMuc.TenThuMuc</a>
+            </span>
+            @if (iThuMuc.ListTaiLieu.Count > 0)
+            {
+                <ul>
+                    @foreach (var tl in iThuMuc.ListTaiLieu)
+                    {
+                        <li class="show" onclick="openTaiLieu(@tl.TaiLieuID, @iThuMuc.ThuMucID);" data-id="@tl.TaiLieuID" data-jstree='{"icon":"fa fa-file-text"}'><span><a>@tl.TenTaiLieu</a></span></li>
+                    }
+                </ul>
+            }
+            @foreach (var i in listThuMuc.Where(a => a.ThuMucChaID.Equals(iThuMuc.ThuMucID) && !a.ThuMucChaID.Equals(a.ThuMucID)))
+            {
+                <ul>
+                    @GetTreeView(listThuMuc, i.ThuMucID)
+                </ul>
+            }
+        </li>
+}
+else //don vi cuoi cung
+{
+        <li class="jstree-open" >
+            <span>
+                <a onclick="return openThuMuc(@iThuMuc.ThuMucID, @dvID);">@iThuMuc.TenThuMuc</a>
+            </span>
+            <ul>
+                @foreach (var tl in iThuMuc.ListTaiLieu)
+                {
+                    <li class="show" onclick="openTaiLieu(@tl.TaiLieuID, @iThuMuc.ThuMucID);" id="@tl.TaiLieuID" data-jstree='{"icon":"fa fa-file-text"}'><span><a>@tl.TenTaiLieu</a></span></li>
+                }
+            </ul>
+        </li>
+}
+}
+
+@section Scripts
+{
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="@Url.Content("~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js")"></script>
+    <!-- jstree -->
+    <script src="@Url.Content("~/Content/treeJs/jstree.min.js")"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="@Url.Content("~/Content/plugins/iCheck/icheck.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/tinymce/js/tinymce/tinymce.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/ckeditor5-build-decoupled-document/ckeditor.js")"></script>
+    <script>
+        $(function () {
+            $('#jstree').jstree({
+                'core': {
+                    "themes": {
+                        "icons": true
+                    }
+                },
+                'search': {
+                    "case_insensitive": true,
+                    "ajax": {
+                        "url": "jstree.xml"
+                    }
+                },
+                'plugins': ["themes", "xml_data", "ui", "types", "search"]
+            });
+        });
+
+        $(document).ready(function () {
+            $("#search-btn").click(function () {
+                var value = document.getElementById("txtSearch").value;
+                $("#jstree").jstree("search", value)
+            });
+
+        });
+    </script>
+    <script type="text/javascript">
+
+        function openTaiLieu(id, pa) {
+            $('#receiver-container').html("");
+            $.ajax({
+                url: "/TaiLieu/EditDetailTaiLieu",
+                data: { id: id, pa : pa },
+                type: 'GET',
+                cache: false,
+                success: function (result) {
+                    $('#receiver-container').html(result);
+                }
+            });
+            return false;
+        };
+
+        function openThuMuc(id, pa) {
+            $('#receiver-container').html("");
+            $.ajax({
+                url: "/TaiLieu/EditDetailThuMuc",
+                data: { id: id , pa : pa},
+                type: 'GET',
+                cache: false,
+                success: function (result) {
+                    $('#receiver-container').html(result);
+                }
+            });
+            return false;
+        };
+
+        function deleteThuMuc(id) {
+            $('#deleteThuMuc').data('id', id).modal('show');
+        };
+
+        $('#btnDeleteThuMucYes').on('click', function () {
+            var id = $('#deleteThuMuc').data('id');
+            $.ajax({
+                url: "/TaiLieu/deleteThuMuc",
+                data: { id: id },
+                type: 'DELETE',
+                cache: false,
+                success: function (response) {
+                    $('#deleteThuMuc').modal('hide');
+                    if (response != null && response.success) {
+                        alert(response.responseText);
+                        location.reload();
+                    } else {
+                        alert(response.responseText);
+                    }
+
+                }
+            });
+        });
+
+        function deleteTaiLieu(id) {
+            $('#deleteTaiLieu').data('id', id).modal('show');
+        };
+
+        $('#btnDeleteTaiLieuYes').on('click', function () {
+            var id = $('#deleteTaiLieu').data('id');
+            $.ajax({
+                url: "/TaiLieu/deleteTaiLieu",
+                data: { id: id },
+                type: 'DELETE',
+                cache: false,
+                success: function (response) {
+                    $('#deleteTaiLieu').modal('hide');
+                    if (response != null && response.success) {
+                        alert(response.responseText);
+                        location.reload();
+                    } else {
+                        alert(response.responseText);
+                    }
+
+                }
+            });
+        });
+
+        function GetResult(response) {
+            if (response != null) {
+                if (response.success) {
+                    alert(response.responseText);
+                    location.reload();
+                } else {
+                    alert(response.responseText);
+                    if (response.href) {
+                        window.location.href = response.href;
+                    }
+                }
+            }
+        }
+
+    </script>
+ 
+}
+
+

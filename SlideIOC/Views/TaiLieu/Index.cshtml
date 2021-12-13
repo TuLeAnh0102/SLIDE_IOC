@@ -1,0 +1,166 @@
+﻿@model IEnumerable<SlideIOC.Models.ThuMucModel>
+@{
+    ViewBag.Title = "Tài liệu VNPT Bình Phước";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SlideIOC.Models.ThuMucModel> _listThuMuc = (List<SlideIOC.Models.ThuMucModel>)ViewData["DanhSachThuMuc"];
+}
+@section Styles
+{
+    <link href="~/Content/treeJs/themes/default/style.min.css" rel="stylesheet">
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link rel="stylesheet" href="~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="~/Content/plugins/iCheck/all.css">
+    <style>
+        .col-left {
+            background-color: #013D5F !important;
+        }
+        #col-right{
+            background-color: #ecf0f5 !important;
+        }
+        .skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn
+        {
+            background-color: #ffffff !important; 
+        }
+        .skin-blue .sidebar a {
+            color: #2a7ea5 ;
+        }
+        .skin-blue .sidebar-menu>li:hover>a, .skin-blue .sidebar-menu>li.active>a {
+            background: #013D5F;
+        }
+        .skin-blue .sidebar-menu>li>.treeview-menu{
+            background: #014064;
+        }
+        .skin-blue .sidebar-menu>li.header{
+            color: white;
+            background: #013D5F;
+            font-size : 14px;
+        }
+    </style>
+}
+
+<!-- =============================================== -->
+<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar col-left">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" id="txtSearch" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            @foreach (var iThuMuc in _listThuMuc)
+            {
+                <li class="active treeview">
+                    <a style="cursor:pointer">
+                        <i class="fa fa-share"></i> <span>@iThuMuc.TenThuMuc</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    @if (iThuMuc.ListChildThuMuc.Count > 0)
+                    {
+                        <ul class="treeview-menu">
+                            @GetTreeView(iThuMuc.ListChildThuMuc)
+                        </ul>
+                    }
+                </li>
+            }
+        </ul>
+</section>
+    <!-- /.sidebar -->
+</aside>
+
+<!-- =============================================== -->
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" id="col-right">
+    <div id="receiver-container">
+
+    </div>
+</div>
+@helper GetTreeView(List<SlideIOC.Models.ThuMucModel> listThuMuc)
+{
+    foreach (var iThuMuc in listThuMuc)
+    {
+        if (iThuMuc.ListChildThuMuc.Count == 0 && iThuMuc.ListTaiLieu.Count == 0)
+        {
+            <li>
+                <a style="cursor:pointer"><i class="fa fa-folder-o"></i> @iThuMuc.TenThuMuc</a>
+            </li>
+        }
+        else
+        {
+            <li class="active">
+                <a style="cursor:pointer">
+                    <i class="fa fa-files-o"></i> @iThuMuc.TenThuMuc
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    @foreach(var iTaiLieu in iThuMuc.ListTaiLieu)
+                    {
+                        <li><a style="cursor:pointer" onclick="openTaiLieu(@iTaiLieu.TaiLieuID);"><i class="fa fa-file-text-o"></i> @iTaiLieu.TenTaiLieu</a></li>
+                    }
+                    @if(iThuMuc.ListChildThuMuc.Count > 0)
+                    {
+                        @GetTreeView(iThuMuc.ListChildThuMuc);
+                    }
+                </ul>
+            </li>
+        }
+
+    }
+}
+
+
+@section Scripts
+{
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="@Url.Content("~/Content/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js")"></script>
+    <!-- jstree -->
+    <script src="@Url.Content("~/Content/treeJs/jstree.min.js")"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="@Url.Content("~/Content/plugins/iCheck/icheck.min.js")"></script>
+
+    <script type="text/javascript">
+        function openTaiLieu(id) {
+            $.ajax({
+                url: "/TaiLieu/DetailTaiLieu",
+                data: { id: id },
+                type: 'GET',
+                cache: false,
+                success: function (result) {
+                    $('#receiver-container').html(result);
+                    $('body').removeClass("sidebar-open");
+                }
+            });
+            return false;
+        };
+        $(document).ready(function () {
+            $("#txtSearch").keyup(function () {
+                var filter = $(this).val(),
+                    count = 0;
+                $("li").each(function () {
+                    if (filter == "") {
+                        $(this).css("visibility", "visible");
+                        $(this).fadeIn();
+                    } else if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                        $(this).css("visibility", "hidden");
+                        $(this).fadeOut();
+                    } else {
+                        $(this).css("visibility", "visible");
+                        $(this).fadeIn();
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,3 @@
+2018-08-20 17:10:14,915 ERROR QuanLiTaiNguyenVNPT.DataAccess.BaseAccess - Error: Must declare the scalar variable "@username".
+2018-08-21 16:08:22,632 ERROR QuanLiTaiNguyenVNPT.DataAccess.BaseAccess - Error: Must declare the scalar variable "@ThuMucID".
+2018-09-06 15:55:45,194 ERROR QuanLiTaiNguyenVNPT.DataAccess.BaseAccess - Error: No Record Effected

@@ -1,0 +1,108 @@
+﻿@model SlideIOC.Models.LoginModel
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/Theme/CSS/MyStyle.css" />
+    <link href="../Image/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <script src="~/Content/plugins/jQuery/jquery-2.2.3.min.js" type="text/javascript"></script>
+    <script src="~/Content/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+    @if (ViewBag.Message != null)
+    {
+        <script type="text/javascript">
+            alert('@Html.Raw(ViewBag.Message)');
+        </script>
+    }
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div id="loginbox" style="margin-top:50px;" class="col-md-4 col-md-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="background-color:#337ab7">
+                        <div class="panel-title" style="text-align:center; font-size:20px; color:white;">VNPT Bình Phước</div>
+                    </div>
+
+                    <div style="padding-top:30px" class="panel-body">
+                        @using (Html.BeginForm("Admin", "TaiLieu", FormMethod.Post, new { @name = "loginForm", @id = "loginForm", @class = "form-horizontal", @role = "form" }))
+                        {
+                            <div style="margin-bottom: 25px" class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                @Html.TextBoxFor(m => m.UserName, new
+                               {
+                                   @id = "txtUsername",
+                                   @class = "form-control",
+                                   @placeholder = "Tên đăng nhập"
+                               })
+                            </div>
+
+                                <div style="margin-bottom: 25px" class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    @Html.TextBoxFor(m => m.Password, new
+                               {
+                                   @id = "txtPassword",
+                                   @class = "form-control",
+                                   @type = "password",
+                                   @placeholder = "Mật khẩu"
+                               })
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label> Mã bảo vệ</label>
+                                        <img alt="Captcha" id="imgcaptcha" src="@Url.Action("CaptchaImage")" style="" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Nhập mã bảo vệ</label>
+                                        @Html.TextBoxFor(model => model.Captcha, new { @class = "form-control" })
+                                    </div>
+
+                                </div>
+
+                                <div style="margin-top:10px" class="form-group">
+                                    <!-- Button -->
+                                    <div class="col-sm-12 controls">
+                                        <button id="btn-login" type="submit" class="btn btn-lg btn-primary btn-block" style="background-color:#3c8dbc">Đăng nhập</button>
+                                    </div>
+                                </div>
+                        }
+                    </div>
+
+                    <div class="panel-footer text-center" style="background-color:#337ab7; color:white;">
+                        ©Trung Tâm CNTT
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#loginForm').submit(function (event) {
+            var theForm = document.forms['loginForm'];
+            var Username = document.getElementById('txtUsername');
+            var Password = document.getElementById('txtPassword');
+
+            if (Username.value == '') {
+                alert('Vui lòng nhập tài khoản.');
+                Username.focus();
+                event.preventDefault();
+                return false;
+            }
+            else if (Password.value == '') {
+                alert('Vui lòng nhập mật khẩu.');
+                Password.focus();
+                event.preventDefault();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

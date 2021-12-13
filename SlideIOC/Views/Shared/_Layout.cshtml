@@ -1,0 +1,109 @@
+﻿@{
+    SlideIOC.Models.UserProfile userProfile = null;
+    if(this.Session["UserProfile"] != null)
+    {
+        userProfile = (SlideIOC.Models.UserProfile)this.Session["UserProfile"];
+    }
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    @Styles.Render("~/Content/bootstrap/css/bootstrap.min.css")
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Theme style -->
+    @Styles.Render("~/Content/dist/css/AdminLTE.min.css")
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+        folder instead of downloading all of them to reduce the load. -->
+    @Styles.Render("~/Content/dist/css/skins/_all-skins.min.css")
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    @Scripts.Render("~/Content/plugins/jQuery/jquery-2.2.3.min.js")
+    @Scripts.Render("~/Content/jquery.unobtrusive-ajax.js")
+    @RenderSection("Styles", required: false)
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("Index", "PhieuKhaoSat")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">BPC</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg">VNPT Bình Phước</span>
+            </a>
+
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                        @if (userProfile != null)
+                        {
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="@SlideIOC.Common.GetImage(userProfile.Image)" class="user-image" alt="User Image">
+                                    <span class="hidden-xs">@Html.Raw(userProfile.HoTen)</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- User image -->
+                                    <li class="user-header">
+                                        <img src="@SlideIOC.Common.GetImage(userProfile.Image)" class="img-circle" alt="User Image">
+
+                                        <p>
+                                            @userProfile.HoTen
+                                            <small>@userProfile.Ten_DV</small>
+                                        </p>
+                                    </li>
+                                    <!-- Menu footer -->
+                                    <li class="user-footer">
+                                            <a href="@Url.Action("LogOut", "TaiLieu")" class="btn bg-red btn-lg btn-flat"><i class="fa fa-sign-out"></i> Đăng xuất</a>
+                                        <!-- /.row -->
+                                    </li>
+                                </ul>
+                            </li>
+                        } 
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        @RenderBody()
+
+        <footer class="main-footer">
+            <strong>VNPT Bình Phước</strong>
+        </footer>
+    </div>
+    <!-- Bootstrap 3.3.6 -->
+    @Scripts.Render("~/Content/bootstrap/js/bootstrap.min.js")
+    <!-- SlimScroll -->
+    @Scripts.Render("~/Content/plugins/slimScroll/jquery.slimscroll.min.js")
+    <!-- AdminLTE App -->
+    @Scripts.Render("~/Content/dist/js/app.min.js")
+    <!-- AdminLTE for demo purposes -->
+    @Scripts.Render("~/Content/dist/js/demo.js")
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,33 @@
+﻿@model SlideIOC.Models.DetailTaiLieuModel
+
+<style>
+    #noidung{
+        overflow-y:scroll;
+        height: 85vh;
+    }
+</style>
+<div id="noidung">
+    <!-- Content Header (Page header) --> 
+    <section class="content-header">
+        <h1>
+            @Html.Raw(Model.TenTaiLieu)
+        </h1>
+    </section>
+    <div class="row">
+        <table>
+
+        </table>
+    </div>
+
+    @if(Model.Files.Count > 0)
+    {
+
+    }
+    <!-- Main content -->
+    <section class="content">
+        @Html.Raw(Model.NoiDungTaiLieu)
+        @*<embed src="~/Image/AAA.PDF" type="application/pdf" style="width:145vh; height:85vh"/>*@
+    </section>
+</div>
+
+<!-- /.content -->
